@@ -46,7 +46,6 @@ def normalize_opensky(json_data):
 
     Documentación oficial: cada elemento de 'states' es una lista con 17 campos.
     """
-
     if json_data is None or "states" not in json_data:
         return pd.DataFrame()
 
@@ -62,7 +61,7 @@ def normalize_opensky(json_data):
 
     df = pd.DataFrame(states, columns=col_names)
 
-    # Agregar timestamp del servidor
+    # Timestamp del servidor (fecha/hora de generación del snapshot)
     df["server_timestamp"] = pd.to_datetime(server_ts, unit="s")
 
     return df
@@ -84,7 +83,7 @@ def standardize_columns(df):
 
 
 # ==========================================================
-# 3. GUARDADO EN DELTA LAKE
+# 3. GUARDADO Y LECTURA EN DELTA LAKE
 # ==========================================================
 
 def save_data_as_delta(df, path, mode="overwrite", partition_cols=None):
@@ -144,3 +143,19 @@ def upsert_data_as_delta(data, data_path, predicate):
 
     except TableNotFoundError:
         save_data_as_delta(data, data_path)
+
+
+# ==========================================================
+# 4. LECTURA COMPLETA DESDE DELTA LAKE (para capa Gold)
+# ==========================================================
+
+def read_all_from_delta(path):
+    """
+    Lee todas las particiones de una tabla Delta Lake
+    y devuelve un DataFrame de Pandas.
+
+    Uso típico en capa Gold:
+    df = read_all_from_delta(silver_dynamic_dir)
+    """
+    dt = DeltaTable(path)
+    return dt.to_pandas()
