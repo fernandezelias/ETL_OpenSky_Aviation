@@ -159,3 +159,127 @@ def read_all_from_delta(path):
     """
     dt = DeltaTable(path)
     return dt.to_pandas()
+
+
+# ==========================================================
+# 5. TRANSFORMACIONES GOLD (enriquecimiento y dataset final)
+# ==========================================================
+
+def prepare_states_for_gold(df_states_silver):
+    """
+    Prepara los datos del snapshot dinámico (Silver) para la capa Gold.
+    
+    Este paso incluye:
+    - estandarización de tipos (string para columnas categóricas)
+    - conversión de timestamps si fuera necesario
+    - limpieza de columnas innecesarias previas al enriquecimiento
+    
+    Parámetros
+    ----------
+    df_states_silver : pd.DataFrame
+        DataFrame proveniente de la capa Silver, ya normalizado.
+    
+    Retorna
+    -------
+    pd.DataFrame
+        DataFrame listo para ser enriquecido con metadatos estáticos.
+    """
+
+    df = df_states_silver.copy()
+
+    # Columnas categóricas que se tipifican como string
+    cols_string = ["icao24", "callsign", "origin_country", "squawk"]
+    for col in cols_string:
+        if col in df.columns:
+            df[col] = df[col].astype("string")
+
+    # Conversión segura de columnas temporales a datetime
+    if "snapshot_time" in df.columns:
+        df["snapshot_time"] = pd.to_datetime(df["snapshot_time"], errors="coerce")
+
+    return df
+
+
+def enrich_states_with_metadata(df_states, df_aircraft):
+    """
+    Enriquecimiento del snapshot dinámico mediante JOIN con la tabla 
+    de metadatos estáticos de aeronaves.
+    
+    El cruce se realiza por la clave primaria 'icao24'.
+    
+    Parámetros
+    ----------
+    df_states : pd.DataFrame
+        DataFrame con el snapshot dinámico ya preparado para Gold.
+    
+    df_aircraft : pd.DataFrame
+        DataFrame proveniente de Silver con metadatos estáticos limpios.
+    
+    Retorna
+    -------
+    pd.DataFrame
+        DataFrame enriquecido que combina información operativa (dinámica)
+        con atributos técnicos del avión (estática).
+    """
+
+    df_states = df_states.copy()
+    df_aircraft = df_aircraft.copy()
+
+    # Asegurar tipo string en la clave de join
+    df_states["icao24"] = df_states["icao24"].astype("string")
+    df_aircraft["icao24"] = df_aircraft["icao24"].astype("string")
+
+    # Join tipo LEFT → se preservan todos los registros dinámicos
+    df_enriched = df_states.merge(
+        df_aircraft,
+        on="icao24",
+        how="left",
+        suffixes=("", "_meta")
+    )
+
+    return df_enriched
+
+
+def build_gold_final_dataset(df_enriched):
+    """
+    Construye el dataset final de la capa Gold.
+    
+    Selecciona y ordena las columnas claves para análisis, combinando:
+    - información operativa del snapshot dinámico
+    - atributos técnicos provenientes de la tabla de referencia
+    
+    Parámetros
+    ----------
+    df_enriched : pd.DataFrame
+        DataFrame resultante del enriquecimiento dinámico + estático.
+    
+    Retorna
+    -------
+    pd.DataFrame
+        DataFrame final listo para análisis, visualización o exportación.
+    """
+
+    df = df_enriched.copy()
+
+    # Columnas operativas principales
+    cols_operativas = [
+        "icao24", "callsign", "origin_country",
+        "snapshot_time", "snapshot_hour",
+        "latitude", "longitude",
+        "baro_altitude", "geo_altitude",
+        "velocity", "true_track", "vertical_rate",
+        "on_ground", "squawk"
+    ]
+
+    # Columnas de metadatos estáticos
+    cols_metadata = [
+        "manufacturername", "model", "typecode",
+        "built", "owner", "engines"
+    ]
+
+    # Se filtran solo columnas existentes para evitar errores
+    columnas_finales = [col for col in cols_operativas + cols_metadata if col in df.columns]
+
+    df_final = df[columnas_finales].copy()
+
+    return df_final
