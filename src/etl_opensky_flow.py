@@ -17,6 +17,7 @@ from prefect import task, flow
 from etl_utils import (
     read_all_from_delta,
     save_data_as_delta,
+    get_opensky_states,
     extract_opensky_states,
     normalize_states_json,
     clean_states_silver,
@@ -34,3 +35,23 @@ SILVER_STATIC = f"{DATALAKE_ROOT}/silver/api_opensky/aircraft_metadata"
 
 GOLD_DIR = f"{DATALAKE_ROOT}/gold/api_opensky"
 EXPORTS_DIR = f"{DATALAKE_ROOT}/exports"
+
+
+# -------------------- Tasks --------------------
+
+@task(
+    retries=3,
+    retry_delay_seconds=30,
+    task_run_name="extract-opensky-states"
+)
+def task_extract_states():
+    """
+    Task de Prefect que ejecuta la extracción de datos desde la API pública de OpenSky.
+    Envuelve la función get_opensky_states() definida en etl_utils.py.
+    """
+    data = get_opensky_states()
+    
+    if data is None:
+        raise ValueError("No se pudieron obtener datos desde OpenSky Network.")
+    
+    return data
