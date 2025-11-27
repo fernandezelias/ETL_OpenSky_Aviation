@@ -53,8 +53,8 @@ src/
 └── etl_utils.py
 
 notebooks/
-├── ETL_OpenSky_Manual.ipynb
-└── ETL_OpenSky_Prefect.ipynb
+├── ETL_OpenSky_Manual.ipynb     # manual version
+└── ETL_OpenSky_Prefect.ipynb    # orchestrated version
 ```
 
 ---
