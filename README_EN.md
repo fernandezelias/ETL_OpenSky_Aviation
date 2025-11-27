@@ -59,6 +59,8 @@ notebooks/
 
 ---
 
+## Pipeline Diagram (Mermaid)
+
 ```mermaid
 flowchart TD
 
