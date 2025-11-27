@@ -53,10 +53,14 @@ GOLD_DIR = f"{DATALAKE_ROOT}/gold/api_opensky"
 
 @task(task_run_name="extract-aircraft-metadata")
 def task_extract_aircraft_metadata() -> pd.DataFrame:
-    """Extrae el CSV de metadatos estáticos de aeronaves."""
-    df = get_aircraft_metadata_csv()
+    """Extrae el CSV de metadatos estáticos de aeronaves desde Bronze."""
+    csv_path = f"{BRONZE_STATIC}/aircraft_database.csv"
+
+    df = get_aircraft_metadata_csv(csv_path)
+
     if df.empty:
         raise ValueError("Los metadatos estáticos recibidos están vacíos.")
+
     return df
 
 
