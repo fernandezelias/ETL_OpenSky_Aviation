@@ -96,8 +96,13 @@ def task_normalize_states(raw_data: dict) -> pd.DataFrame:
 @task(task_run_name="save-bronze-states")
 def task_save_bronze_states(df_normalized: pd.DataFrame):
     """
-    Guarda el snapshot normalizado en la capa Bronze (append).
+    Guarda el snapshot dinámico normalizado en la capa Bronze.
+    Se utiliza append para conservar el historial de ingestas.
     """
+
+    # Fix para Delta Lake: evita columnas con dtype Null/Object
+    df_normalized = df_normalized.convert_dtypes()
+
     save_data_as_delta(
         df=df_normalized,
         path=BRONZE_STATES,
