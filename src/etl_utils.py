@@ -82,6 +82,59 @@ def standardize_columns(df):
     return df
 
 
+def clean_states_silver(df):
+    """
+    Limpieza y estandarización del snapshot dinámico para la capa Silver.
+
+    Incluye:
+    - Conversión de timestamps y creación de columnas derivadas (`snapshot_time`, `snapshot_hour`)
+    - Tipificación numérica segura (coordenadas, altitudes, velocidad, rumbo)
+    - Conversión de columnas booleanas
+    - Tipificación categórica para claves aeronáuticas
+    - Eliminación de columnas sin relevancia analítica
+
+    Retorna un DataFrame limpio, tipado y consistente, listo para su uso en la capa Gold.
+    """
+
+    df = df.copy()
+
+    # Conversión de timestamps
+    if "server_timestamp" in df.columns:
+        df["server_timestamp"] = pd.to_datetime(df["server_timestamp"], errors="coerce")
+
+    if "extraction_timestamp" in df.columns:
+        df["extraction_timestamp"] = pd.to_datetime(df["extraction_timestamp"], errors="coerce")
+
+    df["snapshot_time"] = df["server_timestamp"].fillna(df["extraction_timestamp"])
+    df["snapshot_time"] = pd.to_datetime(df["snapshot_time"], errors="coerce")
+    df["snapshot_hour"] = df["snapshot_time"].dt.strftime("%Y-%m-%d-%H")
+
+    # Tipificación numérica
+    numeric_cols = [
+        "longitude", "latitude", "baro_altitude", "geo_altitude",
+        "velocity", "true_track", "vertical_rate"
+    ]
+    for col in numeric_cols:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    # Tipificación booleana
+    bool_cols = ["on_ground", "spi"]
+    for col in bool_cols:
+        if col in df.columns:
+            df[col] = df[col].astype("boolean")
+
+    # Tipificación categórica
+    if "icao24" in df.columns:
+        df["icao24"] = df["icao24"].astype("string")
+
+    # Eliminación de columnas irrelevantes
+    cols_drop = ["sensors"]
+    df = df.drop(columns=[c for c in cols_drop if c in df.columns], errors="ignore")
+
+    return df
+
+
 # ==========================================================
 # 3. GUARDADO Y LECTURA EN DELTA LAKE
 # ==========================================================
