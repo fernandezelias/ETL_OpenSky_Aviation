@@ -76,6 +76,7 @@ end
 subgraph Gold
 C --> D
 end
+```
 
 ---
 
