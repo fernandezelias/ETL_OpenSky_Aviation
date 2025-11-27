@@ -34,6 +34,13 @@ def get_opensky_states(base_url="https://opensky-network.org/api/states/all"):
     except requests.exceptions.RequestException as e:
         print(f"❌ Error al obtener datos de OpenSky: {e}")
         return None
+    
+
+def get_aircraft_metadata_csv(path: str) -> pd.DataFrame:
+    """
+    Carga metadatos estáticos de aeronaves desde un CSV local.
+    """
+    return pd.read_csv(path)
 
 
 # ==========================================================
