@@ -34,6 +34,9 @@ Proyecto de **Ingeniería de Datos** que implementa un pipeline **ETL automatiza
 
 ---
 
+## 🔄 Diagrama del pipeline (Mermaid)
+
+
 ## ⚙️ Árbol (simplificado)
 
 ```
