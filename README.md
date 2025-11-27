@@ -37,7 +37,6 @@ Proyecto de **Ingeniería de Datos** que implementa un pipeline **ETL automatiza
 ## 🔄 Diagrama del pipeline (Mermaid)
 
 ```mermaid
-```mermaid
 flowchart TD
 
 A[📥 Extracción<br>OpenSky API] --> B[🟤 Bronze<br>states + metadata]
