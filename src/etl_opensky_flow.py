@@ -95,19 +95,27 @@ def task_normalize_states(raw_data: dict) -> pd.DataFrame:
 
 @task(task_run_name="save-bronze-states")
 def task_save_bronze_states(df_normalized: pd.DataFrame):
-    """
-    Guarda el snapshot dinámico normalizado en la capa Bronze.
-    Se utiliza append para conservar el historial de ingestas.
-    """
+    """Guarda el snapshot dinámico en la capa Bronze (append)."""
 
-    # Fix para Delta Lake: evita columnas con dtype Null/Object
-    df_normalized = df_normalized.convert_dtypes()
+    # Normalización básica para garantizar compatibilidad con Delta Lake
+    df_fixed = df_normalized.convert_dtypes()
 
+    # Delta Lake no acepta columnas completamente nulas → se eliminan
+    cols_all_null = [c for c in df_fixed.columns if df_fixed[c].isna().all()]
+    if cols_all_null:
+        df_fixed = df_fixed.drop(columns=cols_all_null)
+
+    # snapshot_hour (si aparece) debe ser string para particionado estable
+    if "snapshot_hour" in df_fixed.columns:
+        df_fixed["snapshot_hour"] = df_fixed["snapshot_hour"].astype("string")
+
+    # Persistencia en Bronze (append para mantener historial de snapshots)
     save_data_as_delta(
-        df=df_normalized,
+        df=df_fixed,
         path=BRONZE_STATES,
         mode="append"
     )
+
     return True
 
 
