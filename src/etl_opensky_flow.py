@@ -194,47 +194,48 @@ def task_save_gold_states(df_gold: pd.DataFrame):
     return True
 
 
-    # -------------------- Flow --------------------
+# -------------------- Flow --------------------
 
-    @flow(name="etl-opensky-full-pipeline")
-    def etl_opensky_flow():
-        """
-        Pipeline ETL completo para ingestar, procesar y enriquecer datos
-        del tráfico aéreo desde OpenSky Network, siguiendo la arquitectura
-        Bronze → Silver → Gold.
-        """
+@flow(name="etl-opensky-full-pipeline")
+def etl_opensky_flow():
+    """
+    Pipeline ETL completo para ingestar, procesar y enriquecer datos
+    del tráfico aéreo desde OpenSky Network, siguiendo la arquitectura
+    Bronze → Silver → Gold.
+    """
 
-        # 1) Extracción desde API pública
-        raw_data = task_extract_states()
+    # 1) Extracción desde API pública
+    raw_data = task_extract_states()
 
-        # 2) Normalización y estandarización (Bronze)
-        df_normalized = task_normalize_states(raw_data)
+    # 2) Normalización y estandarización (Bronze)
+    df_normalized = task_normalize_states(raw_data)
 
-        # 3) Guardado en Bronze (append)
-        task_save_bronze_states(df_normalized)
+    # 3) Guardado en Bronze (append)
+    task_save_bronze_states(df_normalized)
 
-        # 4) Procesamiento Silver (limpieza profunda + columnas temporales)
-        df_silver = task_process_silver_states(df_normalized)
+    # 4) Procesamiento Silver (limpieza profunda + columnas temporales)
+    df_silver = task_process_silver_states(df_normalized)
 
-        # 5) Guardado en Silver (append + particiones)
-        task_save_silver_states(df_silver)
+    # 5) Guardado en Silver (append + particiones)
+    task_save_silver_states(df_silver)
 
-        # 6) Lectura Silver dinámico (para Gold)
-        df_silver_loaded = task_load_silver_states()
+    # 6) Lectura Silver dinámico (para Gold)
+    df_silver_loaded = task_load_silver_states()
 
-        # 7) Lectura Silver metadatos estáticos
-        df_metadata_loaded = task_load_silver_metadata()
+    # 7) Lectura Silver metadatos estáticos
+    df_metadata_loaded = task_load_silver_metadata()
 
-        # 8) Enriquecimiento (LEFT JOIN por icao24)
-        df_gold = task_enrich_states(df_silver_loaded, df_metadata_loaded)
+    # 8) Enriquecimiento (LEFT JOIN por icao24)
+    df_gold = task_enrich_states(df_silver_loaded, df_metadata_loaded)
 
-        # 9) Guardado final en Gold (overwrite)
-        task_save_gold_states(df_gold)
+    # 9) Guardado final en Gold (overwrite)
+    task_save_gold_states(df_gold)
 
-        print("✅ ETL OpenSky ejecutado correctamente.")
+    print("✅ ETL OpenSky ejecutado correctamente.")
 
 
 # -------------------- Main --------------------
+
 if __name__ == "__main__":
     # Opción A — Ejecución manual (demo o validación local)
     # Ejecuta el flujo una sola vez para probar la orquestación de OpenSky.
