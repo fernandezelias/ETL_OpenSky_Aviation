@@ -59,6 +59,28 @@ notebooks/
 
 ---
 
+```mermaid
+flowchart TD
+
+A[📥 Extraction<br>OpenSky API] --> B[🟤 Bronze<br>states + metadata]
+B --> C[🥈 Silver<br>cleaning + typing + snapshot_hour]
+C --> D[🟡 Gold<br>enrichment + join with metadata]
+
+subgraph Bronze
+A --> B
+end
+
+subgraph Silver
+B --> C
+end
+
+subgraph Gold
+C --> D
+end
+```
+
+---
+
 ## 📊 Key Results
 - Full **Static → Bronze → Silver → Gold** workflow.  
 - Hour‑partitioned dynamic air‑traffic snapshots.  
