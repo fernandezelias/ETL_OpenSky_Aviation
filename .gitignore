@@ -1,41 +1,69 @@
 # ==========================================================
-# ETL_OpenSky_Aviation - .gitignore
+# ETL_OpenSky_Aviation - .gitignore (Versión Final)
 # ==========================================================
 
-# --- Data Lake (mantener carpetas vacías en repo, ignorar contenido) ---
-data/etl_datalake/*
+# ==========================================================
+# Data Lake (ignorar archivos, mantener estructura con .gitkeep)
+# ==========================================================
 
-# Pero permitir que se vean las carpetas internas sin datos:
+# Ignorar TODO dentro de data/etl_datalake
+data/etl_datalake/**
+
+# Permitir .gitkeep para versionar solo la estructura de carpetas
 !data/etl_datalake/.gitkeep
 !data/etl_datalake/bronze/.gitkeep
+!data/etl_datalake/bronze/api_opensky/.gitkeep
+!data/etl_datalake/bronze/api_opensky/states/.gitkeep
+!data/etl_datalake/bronze/api_opensky/aircraft_metadata/.gitkeep
+
 !data/etl_datalake/silver/.gitkeep
+!data/etl_datalake/silver/api_opensky/.gitkeep
+!data/etl_datalake/silver/api_opensky/states/.gitkeep
+!data/etl_datalake/silver/api_opensky/aircraft_metadata/.gitkeep
+
 !data/etl_datalake/gold/.gitkeep
+!data/etl_datalake/gold/api_opensky/.gitkeep
+
 !data/etl_datalake/exports/.gitkeep
 
-# --- Delta Lake logs ---
-**/_delta_log/
+# Ignorar los logs de Delta Lake
+data/etl_datalake/**/_delta_log/
 
-# --- Prefect checkpoints ---
+# ==========================================================
+# Prefect checkpoints
+# ==========================================================
 checkpoints/
 
-# --- Python cache ---
+# ==========================================================
+# Python cache
+# ==========================================================
 __pycache__/
 *.pyc
 
-# --- Jupyter ---
+# ==========================================================
+# Jupyter
+# ==========================================================
 .ipynb_checkpoints/
 
-# --- Local configuration ---
+# ==========================================================
+# Config local (no subir credenciales)
+# ==========================================================
 pipeline.conf
 
-# --- Local environments ---
+# ==========================================================
+# Entornos locales
+# ==========================================================
 .venv/
 .env/
 
-# --- Logs ---
+# ==========================================================
+# Logs locales
+# ==========================================================
 logs/
 *.log
 
-# --- OS-specific ---
+# ==========================================================
+# OS-specific
+# ==========================================================
 .DS_Store
 Thumbs.db
