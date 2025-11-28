@@ -2,20 +2,27 @@
 # ETL_OpenSky_Aviation - .gitignore
 # ==========================================================
 
-# --- Data Lake folders ---
-data/
-etl_datalake/
-datalake/
+# --- Data Lake (mantener carpetas vacías en repo, ignorar contenido) ---
+data/etl_datalake/*
 
-# --- Delta Lake checkpoints ---
+# Pero permitir que se vean las carpetas internas sin datos:
+!data/etl_datalake/.gitkeep
+!data/etl_datalake/bronze/.gitkeep
+!data/etl_datalake/silver/.gitkeep
+!data/etl_datalake/gold/.gitkeep
+!data/etl_datalake/exports/.gitkeep
+
+# --- Delta Lake logs ---
+**/_delta_log/
+
+# --- Prefect checkpoints ---
 checkpoints/
-_delta_log/
 
 # --- Python cache ---
 __pycache__/
 *.pyc
 
-# --- Jupyter notebooks ---
+# --- Jupyter ---
 .ipynb_checkpoints/
 
 # --- Local configuration ---
