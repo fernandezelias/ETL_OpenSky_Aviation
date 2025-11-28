@@ -1,15 +1,15 @@
 # ==========================================================
-# ETL_OpenSky_Aviation - .gitignore (Versión Final)
+# ETL_OpenSky_Aviation - .gitignore (Versión Final Optimizada)
 # ==========================================================
 
 # ==========================================================
-# Data Lake (ignorar archivos, mantener estructura con .gitkeep)
+# Data Lake — ignorar contenido, mantener estructura
 # ==========================================================
 
-# Ignorar TODO dentro de data/etl_datalake
+# Ignorar TODO dentro del Data Lake
 data/etl_datalake/**
 
-# Permitir .gitkeep para versionar solo la estructura de carpetas
+# Permitir únicamente .gitkeep para versionar estructura
 !data/etl_datalake/.gitkeep
 !data/etl_datalake/bronze/.gitkeep
 !data/etl_datalake/bronze/api_opensky/.gitkeep
@@ -26,7 +26,7 @@ data/etl_datalake/**
 
 !data/etl_datalake/exports/.gitkeep
 
-# Ignorar los logs de Delta Lake
+# Ignorar logs internos de Delta Lake siempre
 data/etl_datalake/**/_delta_log/
 
 # ==========================================================
