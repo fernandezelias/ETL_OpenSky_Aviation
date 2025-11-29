@@ -140,19 +140,33 @@ def task_normalize_states(raw_data: dict) -> pd.DataFrame:
 
 @task(task_run_name="save-bronze-states")
 def task_save_bronze_states(df_normalized: pd.DataFrame):
-    """Guarda el snapshot dinámico en Bronze (append)."""
-
-    # Mitigaciones estándar para Delta Lake
+    """
+    Guarda el snapshot dinámico en Bronze aplicando un esquema fijo para
+    garantizar consistencia entre ejecuciones manuales y orquestadas.
+    """
     df_fixed = df_normalized.convert_dtypes()
 
-    # Columnas completamente nulas → Delta no las admite
+    # Eliminación de columnas completamente nulas
     cols_all_null = [c for c in df_fixed.columns if df_fixed[c].isna().all()]
     if cols_all_null:
         df_fixed = df_fixed.drop(columns=cols_all_null)
 
-    # snapshot_hour → debe ser string si existiera
+    # Asegurar tipo string en snapshot_hour si existiera
     if "snapshot_hour" in df_fixed.columns:
         df_fixed["snapshot_hour"] = df_fixed["snapshot_hour"].astype("string")
+
+    # Esquema fijo del recurso "states" de OpenSky
+    BRONZE_STATES_SCHEMA = [
+        "icao24", "callsign", "origin_country",
+        "time_position", "last_contact",
+        "longitude", "latitude", "baro_altitude",
+        "on_ground", "velocity", "true_track",
+        "vertical_rate", "sensors", "geo_altitude",
+        "squawk", "spi", "position_source"
+    ]
+
+    # Ajuste del DataFrame al esquema fijo
+    df_fixed = df_fixed.reindex(columns=BRONZE_STATES_SCHEMA)
 
     save_data_as_delta(df=df_fixed, path=BRONZE_STATES, mode="append")
     return True
