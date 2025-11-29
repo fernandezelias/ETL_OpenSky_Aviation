@@ -126,42 +126,53 @@ def clean_states_silver(df):
 
 
 # ==========================================================
-# 3. TRANSFORMACIÓN SILVER — METADATOS ESTÁTICOS  (NUEVO)
+# 3. TRANSFORMACIÓN SILVER — METADATOS ESTÁTICOS
 # ==========================================================
 
 def clean_static_aircraft_metadata(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Limpia y tipifica la tabla de metadatos estáticos antes de guardarla en Silver.
-
-    Realiza:
-    - estandarización de columnas
-    - tipificación de ICAO24 como string
-    - coerción de fechas y columnas numéricas
+    Limpieza y estandarización de la tabla de metadatos estáticos
+    para la capa Silver.
     """
     df = df.copy()
 
-    # Nombres estandarizados
-    df.columns = df.columns.str.lower().str.replace(" ", "_")
+    # Normalización de nombres de columnas
+    df.columns = (
+        df.columns
+            .str.lower()
+            .str.strip()
+            .str.replace(" ", "_")
+            .str.replace(r"[^a-z0-9_]", "", regex=True)
+    )
 
-    # Asegurar tipo string en clave principal
+    # Tipificación clave primaria
     if "icao24" in df.columns:
         df["icao24"] = df["icao24"].astype("string")
 
-    # Columnas numéricas típicas
+    # Tipificación numérica
     numeric_cols = ["built", "engines"]
     for col in numeric_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    # Fechas
+    # Conversión segura de fechas
     if "built" in df.columns:
-        try:
-            df["built"] = pd.to_datetime(df["built"], errors="coerce")
-        except:
-            pass
+        df["built"] = pd.to_datetime(df["built"], errors="coerce")
 
-    return df
+    # Selección final de columnas relevantes (alineado al notebook)
+    cols_finales = [
+        "icao24",
+        "registration",
+        "manufacturername",
+        "model",
+        "typecode",
+        "owner",
+        "built",
+        "engines"
+    ]
+    cols_finales = [c for c in cols_finales if c in df.columns]
 
+    return df[cols_finales]
 
 
 # ==========================================================
