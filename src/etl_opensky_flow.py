@@ -5,6 +5,7 @@
 
 # -------------------- Importaciones -----------------------
 
+import os
 import pandas as pd
 from datetime import datetime
 from prefect import task, flow
@@ -28,21 +29,24 @@ from etl_utils import (
 
 
 # ==========================================================
-# Rutas del Data Lake
+# Rutas del Data Lake (relativas a la raíz del proyecto)
 # ==========================================================
 
-DATALAKE_ROOT = "data/etl_datalake"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
+
+DATALAKE_ROOT = os.path.join(BASE_DIR, "data", "etl_datalake")
 
 # Bronze
-BRONZE_STATES = f"{DATALAKE_ROOT}/bronze/api_opensky/states"
-BRONZE_STATIC = f"{DATALAKE_ROOT}/bronze/api_opensky/aircraft_metadata"
+BRONZE_STATES = os.path.join(DATALAKE_ROOT, "bronze", "api_opensky", "states")
+BRONZE_STATIC = os.path.join(DATALAKE_ROOT, "bronze", "api_opensky", "aircraft_metadata")
 
 # Silver
-SILVER_STATES = f"{DATALAKE_ROOT}/silver/api_opensky/states"
-SILVER_STATIC = f"{DATALAKE_ROOT}/silver/api_opensky/aircraft_metadata"
+SILVER_STATES = os.path.join(DATALAKE_ROOT, "silver", "api_opensky", "states")
+SILVER_STATIC = os.path.join(DATALAKE_ROOT, "silver", "api_opensky", "aircraft_metadata")
 
 # Gold
-GOLD_DIR = f"{DATALAKE_ROOT}/gold/api_opensky"
+GOLD_DIR = os.path.join(DATALAKE_ROOT, "gold", "api_opensky")
 
 
 # ==========================================================
@@ -70,8 +74,21 @@ def task_save_bronze_metadata(df_static: pd.DataFrame):
 
 @task(task_run_name="process-silver-metadata")
 def task_process_silver_metadata(df_static: pd.DataFrame) -> pd.DataFrame:
-    """Procesa y tipifica los metadatos estáticos para la capa Silver."""
+    """
+    Procesa y tipifica los metadatos estáticos para su almacenamiento en la capa Silver.
+    Se aplican normalizaciones, conversión segura de fechas y se eliminan columnas
+    incompatibles con Delta Lake (p. ej., columnas completamente nulas).
+    """
+    # Limpieza base definida en etl_utils
     df_silver = clean_static_aircraft_metadata(df_static)
+
+    # Conversión segura de columnas datetime a formato string (requerido por Delta)
+    datetime_cols = df_silver.select_dtypes(include=["datetime"]).columns
+    for col in datetime_cols:
+        df_silver[col] = df_silver[col].dt.strftime("%Y-%m-%d")
+
+    # Eliminación de columnas completamente nulas (Delta Lake no admite NullType)
+    df_silver = df_silver.dropna(axis=1, how="all")
 
     if df_silver.empty:
         raise ValueError("El procesamiento Silver estático devolvió un DataFrame vacío.")
@@ -86,9 +103,9 @@ def task_save_silver_metadata(df_static_silver: pd.DataFrame):
     return True
 
 
-@task(task_run_name="load-silver-static")
-def task_load_silver_static() -> pd.DataFrame:
-    """Carga el Silver estático procesado (metadatos aeronáuticos)."""
+@task(task_run_name="load-silver-metadata")
+def task_load_silver_metadata() -> pd.DataFrame:
+    """Carga los metadatos estáticos procesados desde Silver."""
     df = read_all_from_delta(SILVER_STATIC)
     if df.empty:
         raise ValueError("No se encontraron metadatos procesados en Silver.")
@@ -126,7 +143,7 @@ def task_save_bronze_states(df_normalized: pd.DataFrame):
     """Guarda el snapshot dinámico en Bronze (append)."""
 
     # Mitigaciones estándar para Delta Lake
-    df_fixed = df_normalized.infer_objects().convert_dtypes()
+    df_fixed = df_normalized.convert_dtypes()
 
     # Columnas completamente nulas → Delta no las admite
     cols_all_null = [c for c in df_fixed.columns if df_fixed[c].isna().all()]
@@ -166,10 +183,10 @@ def task_save_silver_states(df_silver: pd.DataFrame):
 
 @task(task_run_name="load-silver-states")
 def task_load_silver_states() -> pd.DataFrame:
-    """Carga todas las particiones del Silver dinámico."""
+    """Carga todas las particiones del snapshot dinámico procesado en Silver."""
     df = read_all_from_delta(SILVER_STATES)
     if df.empty:
-        raise ValueError("No se encontraron datos en Silver dinámico.")
+        raise ValueError("No se encontraron datos procesados en Silver dinámico.")
     return df
 
 
@@ -228,7 +245,7 @@ def etl_opensky_flow():
 
     # ----------- Gold -----------
     df_silver_loaded = task_load_silver_states()
-    df_metadata_loaded = task_load_silver_static()
+    df_metadata_loaded = task_load_silver_metadata()
     df_gold = task_enrich_states(df_silver_loaded, df_metadata_loaded)
 
     task_save_gold_states(df_gold)
