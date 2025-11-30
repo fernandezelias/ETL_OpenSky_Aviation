@@ -186,12 +186,29 @@ def task_process_silver_states(df_bronze: pd.DataFrame) -> pd.DataFrame:
 @task(task_run_name="save-silver-states")
 def task_save_silver_states(df_silver: pd.DataFrame):
     """Guarda el snapshot dinámico procesado en Silver (append + particiones)."""
+
+    df_fixed = df_silver.copy()
+
+    # Tipificación segura para Delta Lake
+    df_fixed = df_fixed.convert_dtypes()
+
+    # Eliminación de columnas completamente nulas
+    cols_all_null = [c for c in df_fixed.columns if df_fixed[c].isna().all()]
+    if cols_all_null:
+        df_fixed = df_fixed.drop(columns=cols_all_null)
+
+    # snapshot_hour debe ser string
+    if "snapshot_hour" in df_fixed.columns:
+        df_fixed["snapshot_hour"] = df_fixed["snapshot_hour"].astype("string")
+
+    # Guardado en Delta Lake
     save_data_as_delta(
-        df=df_silver,
+        df=df_fixed,
         path=SILVER_STATES,
         mode="append",
         partition_cols=["snapshot_hour"]
     )
+
     return True
 
 
