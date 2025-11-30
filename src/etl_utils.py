@@ -82,22 +82,28 @@ def standardize_columns(df):
     return df
 
 
-def clean_states_silver(df):
+def clean_states_silver(df: pd.DataFrame) -> pd.DataFrame:
     """
     Limpieza y estandarización del snapshot dinámico para la capa Silver.
     """
     df = df.copy()
 
-    # Conversión de timestamps
+    # Conversión de timestamps originales
     if "server_timestamp" in df.columns:
         df["server_timestamp"] = pd.to_datetime(df["server_timestamp"], errors="coerce")
 
     if "extraction_timestamp" in df.columns:
         df["extraction_timestamp"] = pd.to_datetime(df["extraction_timestamp"], errors="coerce")
 
+    # Timestamp principal
     df["snapshot_time"] = df["server_timestamp"].fillna(df["extraction_timestamp"])
     df["snapshot_time"] = pd.to_datetime(df["snapshot_time"], errors="coerce")
+
+    # Partición por hora
     df["snapshot_hour"] = df["snapshot_time"].dt.strftime("%Y-%m-%d-%H")
+
+    # Conversión de fechas al formato requerido por Delta Lake
+    df["snapshot_time"] = df["snapshot_time"].dt.strftime("%Y-%m-%d %H:%M:%S")
 
     # Tipificación numérica
     numeric_cols = [
@@ -118,11 +124,10 @@ def clean_states_silver(df):
     if "icao24" in df.columns:
         df["icao24"] = df["icao24"].astype("string")
 
-    # Eliminación de columnas irrelevantes
-    df = df.drop(columns=["sensors"], errors="ignore")
+    # No eliminamos 'sensors' para mantener consistencia con Bronze
+    # (Bronze define el esquema fijo con 'sensors')
 
     return df
-
 
 
 # ==========================================================
@@ -159,7 +164,14 @@ def clean_static_aircraft_metadata(df: pd.DataFrame) -> pd.DataFrame:
     if "built" in df.columns:
         df["built"] = pd.to_datetime(df["built"], errors="coerce")
 
-    # Selección final de columnas relevantes (alineado al notebook)
+    # Eliminación de columnas sin variabilidad
+    cols_constantes = [
+        c for c in df.columns
+        if df[c].nunique(dropna=True) <= 1
+    ]
+    df = df.drop(columns=cols_constantes, errors="ignore")
+
+    # Selección final de columnas relevantes
     cols_finales = [
         "icao24",
         "registration",
@@ -171,8 +183,13 @@ def clean_static_aircraft_metadata(df: pd.DataFrame) -> pd.DataFrame:
         "engines"
     ]
     cols_finales = [c for c in cols_finales if c in df.columns]
+    df = df[cols_finales]
 
-    return df[cols_finales]
+    # Fechas en formato compatible con Delta Lake
+    if "built" in df.columns:
+        df["built"] = df["built"].dt.strftime("%Y-%m-%d")
+
+    return df
 
 
 # ==========================================================
