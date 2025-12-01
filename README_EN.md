@@ -47,7 +47,6 @@ data/
 │ │ ├── states/
 │ │ └── aircraft_metadata/
 │ ├── gold/api_opensky/
-│ └── exports/
 │
 ├── etl_datalake_manual/ # manual version (Notebook)
 │ ├── bronze/api_opensky/
