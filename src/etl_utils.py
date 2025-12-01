@@ -253,13 +253,19 @@ def read_all_from_delta(path):
 # ==========================================================
 
 def prepare_states_for_gold(df_states_silver):
+    """
+    Prepara el snapshot dinámico proveniente de Silver para la capa Gold.
+    Se asegura tipificación estable sin convertir valores válidos en <NA>.
+    """
     df = df_states_silver.copy()
 
+    # Conversión segura a string (sin perder valores)
     cols_string = ["icao24", "callsign", "origin_country", "squawk"]
     for col in cols_string:
         if col in df.columns:
-            df[col] = df[col].astype("string")
+            df[col] = df[col].astype(str).replace("nan", pd.NA)
 
+    # Timestamp seguro
     if "snapshot_time" in df.columns:
         df["snapshot_time"] = pd.to_datetime(df["snapshot_time"], errors="coerce")
 

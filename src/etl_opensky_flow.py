@@ -127,7 +127,7 @@ def task_extract_states():
 
 @task(task_run_name="normalize-opensky-states")
 def task_normalize_states(raw_data: dict) -> pd.DataFrame:
-    """Normaliza el JSON del snapshot dinámico y agrega timestamps."""
+    """Normaliza el snapshot dinámico y agrega timestamps."""
     df = normalize_opensky(raw_data)
 
     if df.empty:
@@ -135,46 +135,34 @@ def task_normalize_states(raw_data: dict) -> pd.DataFrame:
 
     df = add_extraction_timestamp(df)
     df = standardize_columns(df)
+
+    # === Timestamps para Silver ===
+    ingest_timestamp = datetime.utcnow()
+    df["snapshot_time"] = ingest_timestamp
+    df["snapshot_hour"] = ingest_timestamp.strftime("%Y-%m-%d-%H")
+
     return df
 
 
 @task(task_run_name="save-bronze-states")
 def task_save_bronze_states(df_normalized: pd.DataFrame):
-    """
-    Guarda el snapshot dinámico en Bronze aplicando un esquema fijo para
-    garantizar consistencia entre ejecuciones manuales y orquestadas.
-    """
-    df_fixed = df_normalized.convert_dtypes()
+    """Guarda el snapshot dinámico en Bronze sin alterar el esquema original."""
 
-    # Eliminación de columnas completamente nulas
-    cols_all_null = [c for c in df_fixed.columns if df_fixed[c].isna().all()]
-    if cols_all_null:
-        df_fixed = df_fixed.drop(columns=cols_all_null)
+    df = df_normalized.copy()
 
-    # Asegurar tipo string en snapshot_hour si existiera
-    if "snapshot_hour" in df_fixed.columns:
-        df_fixed["snapshot_hour"] = df_fixed["snapshot_hour"].astype("string")
+    # Eliminación de columnas completamente nulas (Delta no admite columnas 100 % vacías)
+    df = df.dropna(axis=1, how="all")
 
-    # Esquema fijo del recurso "states" de OpenSky
-    BRONZE_STATES_SCHEMA = [
-        "icao24", "callsign", "origin_country",
-        "time_position", "last_contact",
-        "longitude", "latitude", "baro_altitude",
-        "on_ground", "velocity", "true_track",
-        "vertical_rate", "sensors", "geo_altitude",
-        "squawk", "spi", "position_source"
-    ]
+    # Tipificación mínima segura
+    df = df.convert_dtypes()
 
-    # Ajuste del DataFrame al esquema fijo
-    df_fixed = df_fixed.reindex(columns=BRONZE_STATES_SCHEMA)
-
-    save_data_as_delta(df=df_fixed, path=BRONZE_STATES, mode="append")
+    save_data_as_delta(df=df, path=BRONZE_STATES, mode="append")
     return True
 
 
 @task(task_run_name="process-silver-states")
 def task_process_silver_states(df_bronze: pd.DataFrame) -> pd.DataFrame:
-    """Limpieza, tipificación y columnas temporales para Silver dinámico."""
+    """Limpieza y tipificación del snapshot dinámico para Silver."""
     df_silver = clean_states_silver(df_bronze)
 
     if df_silver.empty:
@@ -187,28 +175,26 @@ def task_process_silver_states(df_bronze: pd.DataFrame) -> pd.DataFrame:
 def task_save_silver_states(df_silver: pd.DataFrame):
     """Guarda el snapshot dinámico procesado en Silver (append + particiones)."""
 
-    df_fixed = df_silver.copy()
+    df = df_silver.copy()
 
-    # Tipificación segura para Delta Lake
-    df_fixed = df_fixed.convert_dtypes()
+    # Tipificación estable
+    df = df.convert_dtypes()
 
-    # Eliminación de columnas completamente nulas
-    cols_all_null = [c for c in df_fixed.columns if df_fixed[c].isna().all()]
+    # Eliminar columnas completamente nulas (evita SchemaMismatchError)
+    cols_all_null = [c for c in df.columns if df[c].isna().all()]
     if cols_all_null:
-        df_fixed = df_fixed.drop(columns=cols_all_null)
+        df = df.drop(columns=cols_all_null)
 
     # snapshot_hour debe ser string
-    if "snapshot_hour" in df_fixed.columns:
-        df_fixed["snapshot_hour"] = df_fixed["snapshot_hour"].astype("string")
+    if "snapshot_hour" in df.columns:
+        df["snapshot_hour"] = df["snapshot_hour"].astype("string")
 
-    # Guardado en Delta Lake
     save_data_as_delta(
-        df=df_fixed,
+        df=df,
         path=SILVER_STATES,
         mode="append",
         partition_cols=["snapshot_hour"]
     )
-
     return True
 
 
