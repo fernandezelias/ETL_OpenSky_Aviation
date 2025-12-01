@@ -31,30 +31,7 @@ Proyecto de **Ingeniería de Datos** que implementa un pipeline **ETL automatiza
 3. **Curación — Gold**  
    - Enriquecimiento del snapshot combinado con metadatos estáticos.  
    - Dataset final listo para análisis y visualización.
-
----
-
-## 🔄 Diagrama del pipeline (Mermaid)
-
-```mermaid
-flowchart TD
-
-A[📥 Extracción<br>OpenSky API] --> B[🟤 Bronze<br>states + metadata]
-B --> C[🥈 Silver<br>cleaning + typing + snapshot_hour]
-C --> D[🟡 Gold<br>enriquecimiento + join con metadata]
-
-subgraph Bronze
-A --> B
-end
-
-subgraph Silver
-B --> C
-end
-
-subgraph Gold
-C --> D
-end
-```
+   
 
 ---
 
