@@ -62,23 +62,34 @@ end
 ## ⚙️ Árbol (simplificado)
 
 ```
-data/etl_datalake/
-├── bronze/api_opensky/
-│   ├── states/
-│   └── aircraft_metadata/
-├── silver/api_opensky/
-│   ├── states/
-│   └── aircraft_metadata/
-├── gold/api_opensky/
-└── exports/
-
+data/
+├── etl_datalake/ # versión orquestada (Prefect)
+│ ├── bronze/api_opensky/
+│ │ ├── states/
+│ │ └── aircraft_metadata/
+│ ├── silver/api_opensky/
+│ │ ├── states/
+│ │ └── aircraft_metadata/
+│ ├── gold/api_opensky/
+│ └── exports/
+│
+├── etl_datalake_manual/ # versión manual (Notebook)
+│ ├── bronze/api_opensky/
+│ │ ├── states/
+│ │ └── aircraft_metadata/
+│ ├── silver/api_opensky/
+│ │ ├── states/
+│ │ └── aircraft_metadata/
+│ ├── gold/api_opensky/
+│ └── exports/
+│
 src/
-├── etl_opensky_flow.py
-└── etl_utils.py
+├── etl_opensky_flow.py # flow orquestado con Prefect
+└── etl_utils.py # utilidades compartidas
 
 notebooks/
-├── ETL_OpenSky_Manual.ipynb     # versión manual
-└── ETL_OpenSky_Prefect.ipynb    # orquestación
+├── ETL_OpenSky_Manual.ipynb # versión manual
+└── ETL_OpenSky_Prefect.ipynb # versión orquestada
 ```
 
 ---
