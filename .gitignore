@@ -6,11 +6,16 @@
 # Data Lake — ignorar contenido, mantener estructura
 # ==========================================================
 
-# Ignorar TODO dentro de ambos Data Lakes
-data/etl_datalake/**
-data/etl_datalake_manual/**
+# Ignorar archivos dentro de ambos Data Lakes, pero permitir que Git
+# pueda ver las carpetas internas (para que funcionen las excepciones !)
+data/etl_datalake/*
+data/etl_datalake_manual/*
 
-# Permitir que la carpeta raíz 'data/' exista en el repositorio
+# Permitir que Git recorra todas las subcarpetas
+!data/etl_datalake/**/
+!data/etl_datalake_manual/**/
+
+# Permitir carpeta raíz de data
 !data/.gitkeep
 
 # ----------------------------------------------------------
