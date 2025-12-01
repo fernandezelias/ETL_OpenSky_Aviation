@@ -38,23 +38,34 @@ The architecture follows **Bronze / Silver / Gold** layers and is orchestrated w
 ## ⚙️ Tree Structure (simplified)
 
 ```
-data/etl_datalake/
-├── bronze/api_opensky/
-│   ├── states/
-│   └── aircraft_metadata/
-├── silver/api_opensky/
-│   ├── states/
-│   └── aircraft_metadata/
-├── gold/api_opensky/
-└── exports/
-
+data/
+├── etl_datalake/ # orchestrated version (Prefect)
+│ ├── bronze/api_opensky/
+│ │ ├── states/
+│ │ └── aircraft_metadata/
+│ ├── silver/api_opensky/
+│ │ ├── states/
+│ │ └── aircraft_metadata/
+│ ├── gold/api_opensky/
+│ └── exports/
+│
+├── etl_datalake_manual/ # manual version (Notebook)
+│ ├── bronze/api_opensky/
+│ │ ├── states/
+│ │ └── aircraft_metadata/
+│ ├── silver/api_opensky/
+│ │ ├── states/
+│ │ └── aircraft_metadata/
+│ ├── gold/api_opensky/
+│ └── exports/
+│
 src/
-├── etl_opensky_flow.py
-└── etl_utils.py
+├── etl_opensky_flow.py # Prefect orchestrated flow
+└── etl_utils.py # shared helper functions
 
 notebooks/
-├── ETL_OpenSky_Manual.ipynb     # manual version
-└── ETL_OpenSky_Prefect.ipynb    # orchestrated version
+├── ETL_OpenSky_Manual.ipynb # manual version
+└── ETL_OpenSky_Prefect.ipynb # orchestrated version
 ```
 
 ---
