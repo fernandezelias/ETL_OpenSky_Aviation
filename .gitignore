@@ -10,7 +10,14 @@
 data/etl_datalake/**
 data/etl_datalake_manual/**
 
-# Permitir únicamente .gitkeep para versionar estructura del datalake orquestado
+# Permitir que la carpeta raíz 'data/' exista en el repositorio
+!data/.gitkeep
+
+# ----------------------------------------------------------
+# .gitkeep permitidos para versionar la estructura del
+# Data Lake ORQUESTADO (etl_datalake)
+# ----------------------------------------------------------
+
 !data/etl_datalake/.gitkeep
 !data/etl_datalake/bronze/.gitkeep
 !data/etl_datalake/bronze/api_opensky/.gitkeep
@@ -25,9 +32,11 @@ data/etl_datalake_manual/**
 !data/etl_datalake/gold/.gitkeep
 !data/etl_datalake/gold/api_opensky/.gitkeep
 
-!data/etl_datalake/exports/.gitkeep
+# ----------------------------------------------------------
+# .gitkeep permitidos para versionar la estructura del
+# Data Lake MANUAL (etl_datalake_manual)
+# ----------------------------------------------------------
 
-# Permitir .gitkeep para versionar estructura del datalake manual
 !data/etl_datalake_manual/.gitkeep
 !data/etl_datalake_manual/bronze/.gitkeep
 !data/etl_datalake_manual/bronze/api_opensky/.gitkeep
@@ -44,7 +53,9 @@ data/etl_datalake_manual/**
 
 !data/etl_datalake_manual/exports/.gitkeep
 
+# ----------------------------------------------------------
 # Ignorar logs internos de Delta Lake siempre
+# ----------------------------------------------------------
 data/**/_delta_log/
 
 # ==========================================================
