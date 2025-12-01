@@ -26,15 +26,13 @@ Proyecto de **Ingeniería de Datos** que implementa un pipeline **ETL automatiza
 2. **Transformación — Silver**  
    - **Dinámico:** limpieza profunda, tipificación y creación de columnas temporales (`snapshot_time`, `snapshot_hour`).  
    - **Estático:** estandarización de columnas y tipos.  
-   - Persistencia con particiones por hora para el snapshot dinámico.
+   - Persistencia con particiones por hora.
 
 3. **Curación — Gold**  
-   - Enriquecimiento del snapshot combinado con metadatos estáticos.  
+   - Enriquecimiento del snapshot con metadatos estáticos.  
    - Dataset final listo para análisis y visualización.
 
-
 ---
-
 
 ## ⚙️ Árbol (simplificado)
 
@@ -42,49 +40,37 @@ Proyecto de **Ingeniería de Datos** que implementa un pipeline **ETL automatiza
 data/
 ├── etl_datalake/ # versión orquestada (Prefect)
 │ ├── bronze/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
 │ ├── silver/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
-│ ├── gold/api_opensky/
+│ └── gold/api_opensky/
 │
 ├── etl_datalake_manual/ # versión manual (Notebook)
 │ ├── bronze/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
 │ ├── silver/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
 │ ├── gold/api_opensky/
 │ └── exports/
 │
 src/
-├── etl_opensky_flow.py # flow orquestado con Prefect
-└── etl_utils.py # utilidades compartidas
+├── etl_opensky_flow.py
+└── etl_utils.py
 
 notebooks/
-├── ETL_OpenSky_Manual.ipynb # versión manual
-└── ETL_OpenSky_Prefect.ipynb # versión orquestada
+├── ETL_OpenSky_Manual.ipynb
+└── ETL_OpenSky_Prefect.ipynb
 ```
 
 ---
 
 ```mermaid
 flowchart TD
-
 A[📥 Extracción<br>OpenSky API] --> B[🟤 Bronze<br>states + metadata]
 B --> C[🥈 Silver<br>cleaning + typing + snapshot_hour]
 C --> D[🟡 Gold<br>enriquecimiento + join con metadata]
-
 subgraph Bronze
 A --> B
 end
-
 subgraph Silver
 B --> C
 end
-
 subgraph Gold
 C --> D
 end
@@ -93,24 +79,14 @@ end
 ---
 
 ## 📊 Resultados principales
-- Pipeline completo **Static → Bronze → Silver → Gold**.  
-- Snapshots dinámicos particionados por hora.  
-- Enriquecimiento automático con metadatos técnicos de aeronaves.  
-- Orquestación con Prefect (reintentos, trazabilidad, logs).  
-
----
-
-## 🧠 Conclusión
-Pipeline **reproducible**, **extensible** y adecuado para análisis diarios del tráfico aéreo.  
-Listo para escalar a entornos cloud (Azure / GCP / Databricks).
+- Pipeline completo **Static → Bronze → Silver → Gold**  
+- Snapshots dinámicos particionados por hora  
+- Enriquecimiento con metadatos técnicos  
+- Orquestación Prefect  
 
 ---
 
 ## ✍️ Autor
 **Elías Fernández**  
 📧 fernandezelias86@gmail.com  
-🔗 LinkedIn: www.linkedin.com/in/eliasfernandez208
-
----
-
-📁 **Repositorio:** ETL_OpenSky_Aviation
+🔗 LinkedIn: https://www.linkedin.com/in/eliasfernandez208

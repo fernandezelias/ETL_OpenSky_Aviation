@@ -2,36 +2,35 @@
 
 🌐 Disponible en: [Español](README.md)
 
-Data Engineering project implementing an **end‑to‑end ETL pipeline** for extracting, transforming, and storing **OpenSky Network** dynamic aircraft states and static metadata.  
-The architecture follows **Bronze / Silver / Gold** layers and is orchestrated with **Prefect 2.x**.
+Data Engineering project implementing an automated **ETL pipeline** for ingesting, transforming, and storing **OpenSky Network** dynamic and static datasets, using a **Bronze / Silver / Gold** layered architecture and **Prefect 2.x** orchestration.
 
 ---
 
 ## 🧰 Tech Stack
 - **Language:** Python 3.11  
-- **Orchestration:** Prefect **2.x**  
+- **Orchestration:** Prefect 2.x  
 - **Processing:** Pandas  
-- **Format/Tables:** **Delta Lake**  
-- **Storage:** Layered local Data Lake  
-- **Version control:** Git / GitHub  
+- **Format/Tables:** Delta Lake  
+- **Storage:** Local layered Data Lake  
+- **Version Control:** Git / GitHub  
 
 ---
 
-## 🧩 Pipeline Overview
+## 🧩 Pipeline structure
 
 1. **Ingestion — Bronze**  
-   - **Static metadata:** full download of `aircraftDatabase.csv`.  
-   - **Dynamic snapshot:** extraction from the public states endpoint (`states/all`).  
-   - Minimal cleaning and storage in Delta Lake.
+   - Static metadata (`aircraftDatabase.csv`)  
+   - Dynamic state snapshots (`states/all`)  
+   - Minimal cleanup and Delta Lake persistence  
 
 2. **Transformation — Silver**  
-   - **Dynamic:** deep cleaning, type casting, time enrichment (`snapshot_time`, `snapshot_hour`).  
-   - **Static:** schema standardization.  
-   - Partitioning by hour for time‑series analysis.
+   - Deep cleaning, typing, temporal columns  
+   - Static metadata standardization  
+   - Hour-partitioned storage  
 
 3. **Curation — Gold**  
-   - Enrichment of dynamic snapshots with aircraft static metadata.  
-   - Final dataset ready for analytics and visualization.
+   - Enrichment by joining dynamic + static datasets  
+   - Final dataset ready for analysis and visualization  
 
 ---
 
@@ -39,53 +38,39 @@ The architecture follows **Bronze / Silver / Gold** layers and is orchestrated w
 
 ```
 data/
-├── etl_datalake/ # orchestrated version (Prefect)
+├── etl_datalake/ # orchestrated version
 │ ├── bronze/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
 │ ├── silver/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
-│ ├── gold/api_opensky/
+│ └── gold/api_opensky/
 │
-├── etl_datalake_manual/ # manual version (Notebook)
+├── etl_datalake_manual/
 │ ├── bronze/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
 │ ├── silver/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
 │ ├── gold/api_opensky/
 │ └── exports/
 │
 src/
-├── etl_opensky_flow.py # Prefect orchestrated flow
-└── etl_utils.py # shared helper functions
+├── etl_opensky_flow.py
+└── etl_utils.py
 
 notebooks/
-├── ETL_OpenSky_Manual.ipynb # manual version
-└── ETL_OpenSky_Prefect.ipynb # orchestrated version
+├── ETL_OpenSky_Manual.ipynb
+└── ETL_OpenSky_Prefect.ipynb
 ```
 
 ---
 
-## Pipeline Diagram (Mermaid)
-
 ```mermaid
 flowchart TD
-
 A[📥 Extraction<br>OpenSky API] --> B[🟤 Bronze<br>states + metadata]
 B --> C[🥈 Silver<br>cleaning + typing + snapshot_hour]
-C --> D[🟡 Gold<br>enrichment + join with metadata]
-
+C --> D[🟡 Gold<br>enrichment + metadata join]
 subgraph Bronze
 A --> B
 end
-
 subgraph Silver
 B --> C
 end
-
 subgraph Gold
 C --> D
 end
@@ -94,23 +79,14 @@ end
 ---
 
 ## 📊 Key Results
-- Full **Static → Bronze → Silver → Gold** workflow.  
-- Hour‑partitioned dynamic air‑traffic snapshots.  
-- Automated enrichment with aircraft technical metadata.  
-- Prefect orchestration with retries, logging, and run tracking.  
-
----
-
-## 🧠 Conclusion
-A **reliable**, **modular**, and **cloud‑ready** ETL pipeline suitable for recurrent air‑traffic analytics.
+- Full pipeline **Static → Bronze → Silver → Gold**  
+- Hour-partitioned snapshots  
+- Automated enrichment with aircraft metadata  
+- Prefect orchestration  
 
 ---
 
 ## ✍️ Author
 **Elías Fernández**  
 📧 fernandezelias86@gmail.com  
-🔗 LinkedIn: www.linkedin.com/in/eliasfernandez208
-
----
-
-📁 **Repository:** ETL_OpenSky_Aviation
+🔗 LinkedIn: https://www.linkedin.com/in/eliasfernandez208
