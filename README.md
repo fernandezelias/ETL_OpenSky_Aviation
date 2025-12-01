@@ -31,7 +31,7 @@ Proyecto de **Ingeniería de Datos** que implementa un pipeline **ETL automatiza
 3. **Curación — Gold**  
    - Enriquecimiento del snapshot combinado con metadatos estáticos.  
    - Dataset final listo para análisis y visualización.
-   
+
 
 ---
 
@@ -48,7 +48,6 @@ data/
 │ │ ├── states/
 │ │ └── aircraft_metadata/
 │ ├── gold/api_opensky/
-│ └── exports/
 │
 ├── etl_datalake_manual/ # versión manual (Notebook)
 │ ├── bronze/api_opensky/
