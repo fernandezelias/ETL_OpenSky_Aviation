@@ -2,6 +2,13 @@
 
 🌐 Disponible en: [Español](README.md)
 
+![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
+![Spark](https://img.shields.io/badge/PySpark-3.x-orange.svg)
+![Delta Lake](https://img.shields.io/badge/Delta%20Lake-1.x-blue.svg)
+![Prefect](https://img.shields.io/badge/Orchestration-Prefect%202.x-1abc9c.svg)
+![Status](https://img.shields.io/badge/Status-Active-success.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+
 Data Engineering project implementing an **end‑to‑end ETL pipeline** for extracting, transforming, and storing **OpenSky Network** dynamic aircraft states and static metadata.  
 The architecture follows **Bronze / Silver / Gold** layers and is orchestrated with **Prefect 2.x**.
 
