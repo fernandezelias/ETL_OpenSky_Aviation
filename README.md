@@ -1,6 +1,6 @@
 # ✈️ ETL Pipeline de Datos de Aviación (OpenSky Network)
 
-🌐 Disponible en: [English](README_EN.md)
+🌐 Available in: [English](README_EN.md)
 
 Proyecto de **Ingeniería de Datos** que implementa un pipeline **ETL automatizado** para la ingesta, transformación y almacenamiento de datos dinámicos y estáticos de **OpenSky Network**, organizado en capas **Bronze / Silver / Gold** y orquestado con **Prefect 2.x**.
 

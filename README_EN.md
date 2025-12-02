@@ -1,6 +1,6 @@
 # ✈️ Aviation Data ETL Pipeline (OpenSky Network)
 
-🌐 Available in: [Español](README.md)
+🌐 Disponible en: [Español](README.md)
 
 Data Engineering project implementing an **end‑to‑end ETL pipeline** for extracting, transforming, and storing **OpenSky Network** dynamic aircraft states and static metadata.  
 The architecture follows **Bronze / Silver / Gold** layers and is orchestrated with **Prefect 2.x**.
