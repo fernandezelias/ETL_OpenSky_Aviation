@@ -2,6 +2,13 @@
 
 🌐 Available in: [English](README_EN.md)
 
+![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
+![Spark](https://img.shields.io/badge/PySpark-3.x-orange.svg)
+![Delta Lake](https://img.shields.io/badge/Delta%20Lake-1.x-blue.svg)
+![Prefect](https://img.shields.io/badge/Orchestration-Prefect%202.x-1abc9c.svg)
+![Status](https://img.shields.io/badge/Status-Active-success.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+
 Proyecto de **Ingeniería de Datos** que implementa un pipeline **ETL automatizado** para la ingesta, transformación y almacenamiento de datos dinámicos y estáticos de **OpenSky Network**, organizado en capas **Bronze / Silver / Gold** y orquestado con **Prefect 2.x**.
 
 ---
