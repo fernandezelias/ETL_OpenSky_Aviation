@@ -1,122 +1,136 @@
 # ✈️ Aviation Data ETL Pipeline (OpenSky Network)
 
-🌐 Disponible en [Español](README.md)
+🌐 Disponible también en [Español](README.md)
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
 ![Spark](https://img.shields.io/badge/PySpark-3.x-orange.svg)
 ![Delta Lake](https://img.shields.io/badge/Delta%20Lake-1.x-blue.svg)
 ![Prefect](https://img.shields.io/badge/Orchestration-Prefect%202.x-1abc9c.svg)
-![Status](https://img.shields.io/badge/Status-Active-success.svg)
+![Status](https://img.shields.io/badge/Status-Completed-success.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-Data Engineering project implementing an **end‑to‑end ETL pipeline** for extracting, transforming, and storing **OpenSky Network** dynamic aircraft states and static metadata.  
-The architecture follows **Bronze / Silver / Gold** layers and is orchestrated with **Prefect 2.x**.
+**Data Engineering** project that implements an **ETL pipeline** for ingesting, transforming, and storing both dynamic and static aviation data from **OpenSky Network**, organized using a **Bronze / Silver / Gold** layered architecture.
+
+The project includes **three clearly differentiated execution modes**:
+- **local manual execution**,  
+- **local Prefect-orchestrated execution**,  
+- and a **cloud-ready version validated on Azure Databricks**.
 
 ---
 
-## 🧰 Tech Stack
+## 🧰 Technology Stack
+
 - **Language:** Python 3.11  
-- **Orchestration:** Prefect **2.x**  
-- **Processing:** Pandas  
-- **Format/Tables:** **Delta Lake**  
-- **Storage:** Layered local Data Lake  
+- **Local processing:** Pandas  
+- **Distributed processing:** Apache Spark (PySpark)  
+- **Orchestration:** Prefect 2.x  
+- **Storage format:** Delta Lake  
+- **Storage layer:** Layered Data Lake  
 - **Version control:** Git / GitHub  
 
 ---
 
-## 🧩 Pipeline Overview
+## 🧩 Pipeline Architecture
 
-1. **Ingestion — Bronze**  
-   - **Static metadata:** full download of `aircraftDatabase.csv`.  
-   - **Dynamic snapshot:** extraction from the public states endpoint (`states/all`).  
-   - Minimal cleaning and storage in Delta Lake.
+### 1️⃣ Ingestion — Bronze
+- **Static metadata:** full download of the `aircraftDatabase.csv` dataset.
+- **Dynamic snapshot:** extraction from the public `states/all` endpoint.
+- Persistence in Delta Lake with minimal transformations.
 
-2. **Transformation — Silver**  
-   - **Dynamic:** deep cleaning, type casting, time enrichment (`snapshot_time`, `snapshot_hour`).  
-   - **Static:** schema standardization.  
-   - Partitioning by hour for time‑series analysis.
+### 2️⃣ Transformation — Silver
+- Deep cleaning, type casting, and validation.
+- Creation of temporal columns (`snapshot_time`, `snapshot_hour`).
+- Hourly-partitioned persistence.
 
-3. **Curation — Gold**  
-   - Enrichment of dynamic snapshots with aircraft static metadata.  
-   - Final dataset ready for analytics and visualization.
-
----
-
-## ⚙️ Tree Structure (simplified)
-
-```
-data/
-├── etl_datalake/ # orchestrated version (Prefect)
-│ ├── bronze/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
-│ ├── silver/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
-│ ├── gold/api_opensky/
-│
-├── etl_datalake_manual/ # manual version (Notebook)
-│ ├── bronze/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
-│ ├── silver/api_opensky/
-│ │ ├── states/
-│ │ └── aircraft_metadata/
-│ ├── gold/api_opensky/
-│ └── exports/
-│
-src/
-├── etl_opensky_flow.py # Prefect orchestrated flow
-└── etl_utils.py # shared helper functions
-
-notebooks/
-├── ETL_OpenSky_Manual.ipynb # manual version
-└── ETL_OpenSky_Prefect.ipynb # orchestrated version
-```
+### 3️⃣ Curation — Gold
+- Enrichment of dynamic snapshots with static metadata.
+- Final dataset ready for analytics, visualization, or downstream consumption.
 
 ---
 
-## Pipeline Diagram (Mermaid)
+## ⚙️ Project Structure (simplified)
+
+```
+ETL_OPENSKY_AVIATION/
+├── cloud/
+│   └── databricks/
+│       ├── opensky_etl.ipynb        # Manual ETL adapted to Spark (Azure Databricks)
+│       └── etl_utils.py             # Helper utilities (cloud version)
+│
+├── local/
+│   ├── notebooks/
+│   │   ├── opensky_etl_manual.ipynb        # Manual ETL (pandas)
+│   │   └── opensky_etl_orchestration.ipynb # Prefect-orchestrated execution
+│   │
+│   ├── src/
+│   │   ├── etl_utils.py             # Shared helper functions
+│   │   └── etl_opensky_flow.py      # Prefect flow definition
+│   │
+│   └── data/
+│       ├── etl_datalake_manual/         # Manual ETL outputs
+│       │   ├── bronze/
+│       │   ├── silver/
+│       │   ├── gold/
+│       │   └── exports/
+│       │
+│       └── etl_datalake_orchestrated/   # Orchestrated ETL outputs
+│           ├── bronze/
+│           ├── silver/
+│           └── gold/
+│
+├── pipeline.conf
+├── requirements.txt
+├── README.md
+└── README_EN.md
+```
+
+---
+
+## ☁️ Cloud Version — Azure Databricks
+
+The pipeline was **adapted, executed, and validated on Azure Databricks**, using Apache Spark as the distributed processing engine.
+
+- **Manual execution only** (no orchestration).
+- Pandas was fully replaced by **Spark DataFrames**.
+- Layered persistence following the same Bronze / Silver / Gold logic.
+- The Databricks cluster was **shut down after functional validation** to avoid recurring costs.
+
+The cloud code remains available as a **cloud-ready reference** within the repository.
+
+---
+
+## 🗺️ Pipeline Diagram
 
 ```mermaid
 flowchart TD
-
-A[📥 Extraction<br>OpenSky API] --> B[🟤 Bronze<br>states + metadata]
-B --> C[🥈 Silver<br>cleaning + typing + snapshot_hour]
-C --> D[🟡 Gold<br>enrichment + join with metadata]
-
-subgraph Bronze
-A --> B
-end
-
-subgraph Silver
-B --> C
-end
-
-subgraph Gold
-C --> D
-end
+    A[📥 OpenSky API] --> B[🟤 Bronze]
+    B --> C[🥈 Silver]
+    C --> D[🟡 Gold]
 ```
 
 ---
 
-## 📊 Key Results
-- Full **Static → Bronze → Silver → Gold** workflow.  
-- Hour‑partitioned dynamic air‑traffic snapshots.  
-- Automated enrichment with aircraft technical metadata.  
-- Prefect orchestration with retries, logging, and run tracking.  
+## 📊 Key Outcomes
+
+- Fully reproducible ETL pipeline
+- Clear separation between local and cloud execution
+- Prefect-based orchestration (retries, logging, execution tracking)
+- Successful migration from pandas to Spark
+- Clean, portfolio-oriented project structure
 
 ---
 
 ## 🧠 Conclusion
-A **reliable**, **modular**, and **cloud‑ready** ETL pipeline suitable for recurrent air‑traffic analytics.
+
+A **robust, modular, and scalable** project designed following Data Engineering best practices and prepared for production and cloud environments.
 
 ---
 
 ## ✍️ Author
+
 **Elías Fernández**  
 📧 fernandezelias86@gmail.com  
-🔗 LinkedIn: www.linkedin.com/in/eliasfernandez208
+🔗 LinkedIn: https://www.linkedin.com/in/eliasfernandez208  
 
 ---
 
