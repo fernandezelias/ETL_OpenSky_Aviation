@@ -3,65 +3,65 @@
 # ==========================================================
 
 # ==========================================================
-# Data Lake — ignorar contenido, mantener estructura
+# Data Lake — ignorar contenido, mantener estructura (LOCAL)
 # ==========================================================
 
-# Ignorar archivos dentro de ambos Data Lakes, pero permitir que Git
-# pueda ver las carpetas internas (para que funcionen las excepciones !)
-data/etl_datalake/*
-data/etl_datalake_manual/*
+# Ignorar archivos dentro de ambos Data Lakes (local),
+# pero permitir que Git vea las carpetas internas
+local/data/etl_datalake/*
+local/data/etl_datalake_manual/*
 
 # Permitir que Git recorra todas las subcarpetas
-!data/etl_datalake/**/
-!data/etl_datalake_manual/**/
+!local/data/etl_datalake/**/
+!local/data/etl_datalake_manual/**/
 
-# Permitir carpeta raíz de data
-!data/.gitkeep
+# Permitir carpeta raíz de data (local)
+!local/data/.gitkeep
 
 # ----------------------------------------------------------
 # .gitkeep permitidos para versionar la estructura del
 # Data Lake ORQUESTADO (etl_datalake)
 # ----------------------------------------------------------
 
-!data/etl_datalake/.gitkeep
-!data/etl_datalake/bronze/.gitkeep
-!data/etl_datalake/bronze/api_opensky/.gitkeep
-!data/etl_datalake/bronze/api_opensky/states/.gitkeep
-!data/etl_datalake/bronze/api_opensky/aircraft_metadata/.gitkeep
+!local/data/etl_datalake/.gitkeep
+!local/data/etl_datalake/bronze/.gitkeep
+!local/data/etl_datalake/bronze/api_opensky/.gitkeep
+!local/data/etl_datalake/bronze/api_opensky/states/.gitkeep
+!local/data/etl_datalake/bronze/api_opensky/aircraft_metadata/.gitkeep
 
-!data/etl_datalake/silver/.gitkeep
-!data/etl_datalake/silver/api_opensky/.gitkeep
-!data/etl_datalake/silver/api_opensky/states/.gitkeep
-!data/etl_datalake/silver/api_opensky/aircraft_metadata/.gitkeep
+!local/data/etl_datalake/silver/.gitkeep
+!local/data/etl_datalake/silver/api_opensky/.gitkeep
+!local/data/etl_datalake/silver/api_opensky/states/.gitkeep
+!local/data/etl_datalake/silver/api_opensky/aircraft_metadata/.gitkeep
 
-!data/etl_datalake/gold/.gitkeep
-!data/etl_datalake/gold/api_opensky/.gitkeep
+!local/data/etl_datalake/gold/.gitkeep
+!local/data/etl_datalake/gold/api_opensky/.gitkeep
 
 # ----------------------------------------------------------
 # .gitkeep permitidos para versionar la estructura del
 # Data Lake MANUAL (etl_datalake_manual)
 # ----------------------------------------------------------
 
-!data/etl_datalake_manual/.gitkeep
-!data/etl_datalake_manual/bronze/.gitkeep
-!data/etl_datalake_manual/bronze/api_opensky/.gitkeep
-!data/etl_datalake_manual/bronze/api_opensky/states/.gitkeep
-!data/etl_datalake_manual/bronze/api_opensky/aircraft_metadata/.gitkeep
+!local/data/etl_datalake_manual/.gitkeep
+!local/data/etl_datalake_manual/bronze/.gitkeep
+!local/data/etl_datalake_manual/bronze/api_opensky/.gitkeep
+!local/data/etl_datalake_manual/bronze/api_opensky/states/.gitkeep
+!local/data/etl_datalake_manual/bronze/api_opensky/aircraft_metadata/.gitkeep
 
-!data/etl_datalake_manual/silver/.gitkeep
-!data/etl_datalake_manual/silver/api_opensky/.gitkeep
-!data/etl_datalake_manual/silver/api_opensky/states/.gitkeep
-!data/etl_datalake_manual/silver/api_opensky/aircraft_metadata/.gitkeep
+!local/data/etl_datalake_manual/silver/.gitkeep
+!local/data/etl_datalake_manual/silver/api_opensky/.gitkeep
+!local/data/etl_datalake_manual/silver/api_opensky/states/.gitkeep
+!local/data/etl_datalake_manual/silver/api_opensky/aircraft_metadata/.gitkeep
 
-!data/etl_datalake_manual/gold/.gitkeep
-!data/etl_datalake_manual/gold/api_opensky/.gitkeep
+!local/data/etl_datalake_manual/gold/.gitkeep
+!local/data/etl_datalake_manual/gold/api_opensky/.gitkeep
 
-!data/etl_datalake_manual/exports/.gitkeep
+!local/data/etl_datalake_manual/exports/.gitkeep
 
 # ----------------------------------------------------------
 # Ignorar logs internos de Delta Lake siempre
 # ----------------------------------------------------------
-data/**/_delta_log/
+local/data/**/_delta_log/
 
 # ==========================================================
 # Prefect checkpoints
