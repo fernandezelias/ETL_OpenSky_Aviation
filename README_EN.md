@@ -122,7 +122,7 @@ flowchart TD
 
 ## 🧠 Conclusion
 
-A **robust, modular, and scalable** project designed following Data Engineering best practices and prepared for production and cloud environments.
+A **modular and scalable** project focused on reproducibility and cloud-ready execution, implemented following Data Engineering best practices.
 
 ---
 
@@ -130,7 +130,7 @@ A **robust, modular, and scalable** project designed following Data Engineering 
 
 **Elías Fernández**  
 📧 fernandezelias86@gmail.com  
-🔗 LinkedIn: https://www.linkedin.com/in/eliasfernandez208  
+🔗 LinkedIn: [Profile](https://www.linkedin.com/in/eliasfernandez208)
 
 ---
 

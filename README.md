@@ -122,7 +122,7 @@ flowchart TD
 
 ## 🧠 Conclusión
 
-Proyecto **robusto, modular y escalable**, diseñado con buenas prácticas de Ingeniería de Datos y preparado para entornos productivos y cloud.
+Proyecto **modular y escalable**, orientado a la reproducibilidad y preparado para ejecución en entornos cloud, implementado siguiendo buenas prácticas de Ingeniería de Datos.
 
 ---
 
@@ -130,7 +130,7 @@ Proyecto **robusto, modular y escalable**, diseñado con buenas prácticas de In
 
 **Elías Fernández**  
 📧 fernandezelias86@gmail.com  
-🔗 LinkedIn: https://www.linkedin.com/in/eliasfernandez208  
+🔗 LinkedIn: [Perfil](https://www.linkedin.com/in/eliasfernandez208)
 
 ---
 
