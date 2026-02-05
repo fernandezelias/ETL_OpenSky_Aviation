@@ -1,6 +1,6 @@
 # ✈️ Aviation Data ETL Pipeline (OpenSky Network)
 
-🌐 Disponible también en [Español](README.md)
+🌐 **Disponible en Español:** [README.md](README.md)
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
 ![Spark](https://img.shields.io/badge/PySpark-3.x-orange.svg)
@@ -92,7 +92,7 @@ The pipeline was **adapted, executed, and validated on Azure Databricks**, using
 
 - **Manual execution only** (no orchestration).
 - Pandas was fully replaced by **Spark DataFrames**.
-- Layered persistence following the same Bronze / Silver / Gold logic.
+- Data was persisted to **Azure Storage containers**, following the same **Bronze / Silver / Gold** layered architecture.
 - The Databricks cluster was **shut down after functional validation** to avoid recurring costs.
 
 The cloud code remains available as a **cloud-ready reference** within the repository.
