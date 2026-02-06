@@ -1,6 +1,6 @@
 # ✈️ ETL Pipeline de Datos de Aviación (OpenSky Network)
 
-🌐 **Available in English:** [README_EN.md](README_EN.md)
+🌐 Available in [English](README_EN.md)
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
 ![Spark](https://img.shields.io/badge/PySpark-3.x-orange.svg)
