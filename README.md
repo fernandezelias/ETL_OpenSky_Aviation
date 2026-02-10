@@ -127,9 +127,8 @@ Proyecto **modular y escalable**, orientado a la reproducibilidad y preparado pa
 ---
 
 ## ✍️ Autor
-
 **Elías Fernández**  
-📧 fernandezelias86@gmail.com  
+📧 Contacto: fernandezelias86@gmail.com  
 🔗 LinkedIn: [Perfil](https://www.linkedin.com/in/eliasfernandez208)
 
 ---
