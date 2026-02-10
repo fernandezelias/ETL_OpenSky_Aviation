@@ -126,10 +126,8 @@ A **modular and scalable** project focused on reproducibility and cloud-ready ex
 
 ---
 
-## ✍️ Author
-
-**Elías Fernández**  
-📧 fernandezelias86@gmail.com  
+✍️ **Autor:** Elías Fernández  
+📧 **Contacto:** fernandezelias86@gmail.com  
 🔗 LinkedIn: [Profile](https://www.linkedin.com/in/eliasfernandez208)
 
 ---
