@@ -120,7 +120,7 @@ flowchart TD
 
 ---
 
-## 🧠 Conclusion
+## 🧾 Conclusion
 
 A **modular and scalable** project focused on reproducibility and cloud-ready execution, implemented following Data Engineering best practices.
 
