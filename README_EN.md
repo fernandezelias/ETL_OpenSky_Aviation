@@ -58,7 +58,7 @@ The project includes **three clearly differentiated execution modes**:
 
 ---
 
-## ⚙️ Project Structure (simplified)
+## ⚙️ Project Structure (overview)
 
 ```
 ETL_OPENSKY_AVIATION/
