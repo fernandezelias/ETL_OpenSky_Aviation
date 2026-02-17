@@ -120,7 +120,7 @@ flowchart TD
 
 ---
 
-## 🧠 Conclusión
+## 🧾 Conclusión
 
 Proyecto **modular y escalable**, orientado a la reproducibilidad y preparado para ejecución en entornos cloud, implementado siguiendo buenas prácticas de Ingeniería de Datos.
 
