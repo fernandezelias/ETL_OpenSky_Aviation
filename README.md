@@ -58,7 +58,7 @@ El proyecto contempla **tres modos de ejecución** claramente diferenciados:
 
 ---
 
-## ⚙️ Estructura del proyecto (simplificada)
+## ⚙️ Estructura del proyecto (vista general)
 
 ```
 ETL_OPENSKY_AVIATION/
