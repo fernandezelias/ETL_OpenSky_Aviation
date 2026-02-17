@@ -18,6 +18,16 @@ El proyecto contempla **tres modos de ejecución** claramente diferenciados:
 
 ---
 
+## ▶️ Cómo ejecutarlo (quickstart)
+
+> Requiere definir la configuración en `pipeline.conf` y luego elegir uno de los tres modos:
+
+- **Local (Pandas + Delta Lake):** ejecutar `local/notebooks/opensky_etl_manual.ipynb`.
+- **Orquestado (Prefect):** ejecutar el flow `local/src/etl_opensky_flow.py` (o `local/notebooks/opensky_etl_orchestration.ipynb`).
+- **Cloud (Azure Databricks + Spark):** importar y ejecutar `cloud/databricks/opensky_etl.ipynb`.
+
+---
+
 ## 🧰 Stack Tecnológico
 
 - **Lenguaje:** Python 3.11  
@@ -112,11 +122,11 @@ flowchart TD
 
 ## 📊 Resultados principales
 
-- Pipeline ETL completo y reproducible
-- Separación clara entre ejecución local y cloud
-- Orquestación con Prefect (reintentos, logging, tracking)
-- Adaptación exitosa de pandas → Spark
-- Estructura limpia y orientada a portfolio profesional
+- Pipeline ETL **end-to-end** con persistencia por capas **Bronze/Silver/Gold**.
+- Ingesta de **datos estáticos** (`aircraftDatabase.csv`) + **snapshots dinámicos** (`states/all`).
+- Transformaciones de **calidad y tipificación**, con columnas temporales (`snapshot_time`, `snapshot_hour`).
+- Persistencia **particionada por hora** en Silver para mejorar organización y consultas.
+- Tres modalidades consistentes: **Pandas+Delta (local)**, **Prefect (orquestado)** y **Spark (cloud)**.
 
 ---
 
