@@ -18,6 +18,16 @@ The project includes **three clearly differentiated execution modes**:
 
 ---
 
+## ▶️ How to Run (quickstart)
+
+> Configure `pipeline.conf` first, then choose one of the three execution modes:
+
+- **Local (Pandas + Delta Lake):** run `local/notebooks/opensky_etl_manual.ipynb`.
+- **Orchestrated (Prefect):** run the flow `local/src/etl_opensky_flow.py` (or `local/notebooks/opensky_etl_orchestration.ipynb`).
+- **Cloud (Azure Databricks + Spark):** import and run `cloud/databricks/opensky_etl.ipynb`.
+
+---
+
 ## 🧰 Technology Stack
 
 - **Language:** Python 3.11  
@@ -48,7 +58,7 @@ The project includes **three clearly differentiated execution modes**:
 
 ---
 
-## ⚙️ Project Structure (simplified)
+## ⚙️ Project Structure (overview)
 
 ```
 ETL_OPENSKY_AVIATION/
@@ -114,26 +124,31 @@ flowchart TD
 
 ## 📊 Key Outcomes
 
-- Fully reproducible ETL pipeline
-- Clear separation between local and cloud execution
-- Prefect-based orchestration (retries, logging, execution tracking)
-- Successful migration from pandas to Spark
-- Clean, portfolio-oriented project structure
+- **End-to-end** ETL pipeline with **Bronze/Silver/Gold** layered persistence.
+- Ingestion of **static data** (`aircraftDatabase.csv`) + **dynamic snapshots** (`states/all`).
+- Data quality + type casting transformations, including temporal columns (`snapshot_time`, `snapshot_hour`).
+- **Hourly-partitioned** persistence in Silver to improve organization and querying.
+- Three consistent execution modes: **Pandas+Delta (local)**, **Prefect (orchestrated)**, and **Spark (cloud)**.
 
 ---
 
-## 🧠 Conclusion
+## 🧾 Conclusion
 
 A **modular and scalable** project focused on reproducibility and cloud-ready execution, implemented following Data Engineering best practices.
 
 ---
 
-## ✍️ Author
-
-**Elías Fernández**  
-📧 fernandezelias86@gmail.com  
-🔗 LinkedIn: [Profile](https://www.linkedin.com/in/eliasfernandez208)
+## 🪪 License
+This project is distributed under the MIT License.  
+See the [LICENSE](LICENSE) file.
 
 ---
 
-📁 **Repository:** ETL_OpenSky_Aviation
+## ✍️ Author
+**Elías Fernández**
+
+---
+
+## 📫 Contact
+📧 [fernandezelias86@gmail.com](mailto:fernandezelias86@gmail.com)  
+🔗 LinkedIn: [Profile](https://www.linkedin.com/in/eliasfernandez208)
