@@ -55,7 +55,7 @@ ETL_OPENSKY_AVIATION/
 ├── cloud/
 │   └── databricks/
 │       ├── opensky_etl.ipynb        # ETL manual adaptado a Spark (Azure Databricks)
-│       └── etl_utils.py             # Utilidades (versión cloud)
+│       └── etl_utils.py             # Compatibilidad / referencia histórica
 │
 ├── local/
 │   ├── notebooks/
@@ -94,6 +94,8 @@ El pipeline fue **adaptado, ejecutado y validado en Azure Databricks**, utilizan
 - Eliminación del uso de pandas en favor de **Spark DataFrames**.
 - Persistencia de los datos en **contenedores de Azure Storage**, siguiendo la misma arquitectura por capas **Bronze / Silver / Gold**.
 - El cluster fue **apagado tras la validación funcional** para evitar costos recurrentes.
+
+> **Nota:** La infraestructura cloud utilizada durante el desarrollo ya no se encuentra activa. La validación y mantenimiento actual del proyecto se realizan mediante la implementación local basada en Python, Pandas y Delta Lake. La versión Databricks se conserva como referencia de la adaptación y validación realizadas sobre Azure.
 
 El código cloud queda disponible como referencia **cloud-ready** dentro del repositorio.
 
